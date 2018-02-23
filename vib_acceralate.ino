@@ -77,14 +77,18 @@ void loop() {
 
 
 
-  if ( abs(angleX) > 330) angleX = 360 - abs(angleX);
+  if ( abs(angleX) > 360) angleX = abs(angleX) - 360;
+  else if ( abs(angleX) > 330) angleX = 360 - abs(angleX);
   //if ( abs(angleY) > 330) angleY = 360 - abs(angleY);
-  if ( abs(angleZ) > 330) angleZ = 360 - abs(angleZ);
+  if ( abs(angleZ) > 360) angleZ = abs(angleZ) - 360;
+  else if ( abs(angleZ) > 330) angleZ = 360 - abs(angleZ);
 
 
   Serial.print("angleX : "); Serial.print(angleX);
   Serial.print(" angleY : "); Serial.print(angleY);
   Serial.print(" angleZ : "); Serial.println(angleZ);
+
+  float angleY_check;
 
   if ( angleY < -40 || angleY > 20) {
 
@@ -101,32 +105,25 @@ void loop() {
 
 
   //持ち手左側
-  if (angleX < 30) vib_val[0] = 0;
-  else vib_val[0] = 100;
+  if (angleX >= 25) vib_val[0] = 100;
+  else vib_val[0] = 0;
 
   //持ち手外側
-  if (angleZ > -30) vib_val[1] = 0;
-  else vib_val[1] = 100;
+  if (angleZ <= -30) vib_val[1] = 100;
+  else vib_val[1] = 0;
 
   //持ち手右側
-  if (angleX > -25) vib_val[2] = 0;
-  else vib_val[2] = 100;
+  if (angleX <= -25) vib_val[2] = 100;
+  else vib_val[2] = 0;
 
   //持ち手内側
-  if (angleZ < 30) vib_val[3] = 0;
-  else vib_val[3] = 100;
-
-  // if (angleX < -40 && angleZ > -120 && angleZ < 0) vib_val[1] = 0;
-  //if (angleX < -70 && angleZ > 30) vib_val[3] = 0;
-
-
+  if (angleZ >= 30) vib_val[3] = 100;
+  else vib_val[3] = 0;
 
   //振動
   for (int i = 0; i < 4; i++)digitalWrite( vib_motor_pin[i], vib_val[i]);
 
   delay( 500 );
-
-
 }
 
 void displaySensorDetails(void)
@@ -142,7 +139,6 @@ void displaySensorDetails(void)
   Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" uT");
   Serial.println("------------------------------------");
   Serial.println("");
-
 
 
   delay(500);
